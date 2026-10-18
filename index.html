@@ -342,7 +342,7 @@ async function castVote(i){
 }
 
 /* Сервер голосования */
-var API="https://vibori-api.REPLACE_ME.workers.dev";
+var API="https://vibori-api.kdo664888.workers.dev";
 var ADMIN=ls("admkey")||"";
 function vid(){var v=ls("vid");if(!v){v=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():("v"+Math.random().toString(36).slice(2)+Date.now());ls("vid",v)}return v}
 function api(path,opt){
