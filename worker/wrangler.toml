@@ -1,5 +1,5 @@
 name = "vibori-api"
-main = "src/index.js"
+main = "worker/src/index.js"
 compatibility_date = "2025-01-01"
 
 [[kv_namespaces]]
