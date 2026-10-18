@@ -8,4 +8,4 @@ id = "657e01d5780f4efc99454f4ffed53e43"
 
 [vars]
 ALLOWED_ORIGIN = "https://kdo664888-design.github.io"
-STRICT_IP = "0"2
+STRICT_IP = "0"
