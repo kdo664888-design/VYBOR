@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Выборы Президента — Голосование</title>
+<style>
+:root{--bg:#fff;--soft:#f5f7fb;--card:#fff;--text:#1f2937;--muted:#6b7280;--blue:#0b5fd1;--line:#e3e8f0;--red:#d52b1e;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{background:#fff;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 "Segoe UI",Roboto,Arial,sans-serif}
+header{background:var(--bg);border-bottom:1px solid var(--line);padding:14px 20px;display:flex;align-items:center;gap:14px}
+.emblem{width:42px;height:48px;flex:none;color:var(--blue)}
+header h1{margin:0;font-size:17px;line-height:1.25;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+header p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+nav{background:var(--bg);border-bottom:1px solid var(--line);padding:0 12px;display:flex;gap:4px;overflow-x:auto;position:sticky;top:0;z-index:5}
+nav button{background:none;border:0;border-bottom:3px solid transparent;color:var(--text);font:inherit;font-size:15px;padding:12px 14px;cursor:pointer;white-space:nowrap}
+nav button:hover{color:var(--blue)}
+nav button.act{color:var(--blue);border-color:var(--blue);font-weight:600}
+main{max-width:760px;margin:0 auto;padding:22px 16px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:22px;margin-bottom:18px}
+h2{margin:0 0 6px;font-size:22px;font-weight:700}
+h2 i{display:block;width:44px;height:3px;background:var(--blue);margin-top:8px;border-radius:2px}
+.sub{margin:12px 0 14px;color:var(--muted);font-size:14px}
+label.f{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+input[type=text],input[type=number],textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--text);font:inherit}
+input:focus,textarea:focus{outline:2px solid var(--blue);border-color:transparent}
+.err{color:var(--red);font-size:13px;min-height:16px}
+.btn{display:inline-block;border:1px solid var(--blue);background:var(--blue);color:#fff;padding:11px 22px;border-radius:6px;font:inherit;font-weight:600;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--blue)}
+.cands{display:grid;gap:10px}
+.cand{display:flex;align-items:center;gap:14px;border:1px solid var(--line);border-radius:8px;padding:12px 14px;cursor:pointer;background:var(--card)}
+.cand:hover{border-color:var(--blue)}
+.cand.sel{border-color:var(--blue);box-shadow:inset 3px 0 0 var(--blue);background:var(--soft)}
+.cand input{accent-color:var(--blue)}
+.ava{width:42px;height:42px;border-radius:50%;border:2px solid var(--blue);color:var(--blue);display:grid;place-items:center;font-weight:700;flex:none}
+.cand b{display:block}
+.cand span{color:var(--muted);font-size:13px}
+.hidden{display:none!important}
+.steps{display:flex;gap:8px;margin-bottom:16px;font-size:13px;color:var(--muted)}
+.steps div{flex:1;padding:6px 0;border-bottom:3px solid var(--line)}
+.steps .on{border-color:var(--blue);color:var(--blue);font-weight:600}
+.overlay{position:fixed;inset:0;background:rgba(10,20,40,.55);display:grid;place-items:center;padding:20px;z-index:30}
+.modal{background:var(--card);border-radius:10px;max-width:380px;width:100%;padding:24px;text-align:center;border-top:5px solid var(--red)}
+.modal h3{margin:0 0 8px;font-size:22px}
+.cookie{position:fixed;left:0;right:0;bottom:0;background:var(--card);color:var(--text);border-top:2px solid var(--blue);box-shadow:0 -4px 14px rgba(0,0,0,.08);padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:12px;align-items:center;flex-wrap:wrap;z-index:20}
+.cookie p{margin:0;flex:1;min-width:220px;font-size:14px}
+.promo{position:fixed;right:12px;top:calc(12px + env(safe-area-inset-top,0px));width:min(320px,calc(100% - 24px));background:var(--card);border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:14px 36px 14px 14px;z-index:25}
+.promo b{display:block;margin-bottom:4px}
+.promo small{color:var(--muted);display:block;margin-bottom:10px}
+.promo .x{position:absolute;right:8px;top:6px;background:none;border:0;font-size:22px;color:var(--muted);cursor:pointer}
+.done{text-align:center}.done .big{font-size:48px}
+pre{background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:10px;font-size:13px;white-space:pre-wrap;word-break:break-all;margin:8px 0 0}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:12px;text-align:center;padding:18px 16px 100px}
+footer b{color:var(--text)}
+.kz header,.kz nav,.kz footer{display:none}
+.kzbar{display:flex;align-items:center;gap:12px;border-bottom:3px solid var(--blue);padding-bottom:14px;margin-bottom:18px}
+.kzlogo{width:46px;height:46px;border-radius:10px;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px}
+.kzbar b{display:block;font-size:20px}
+.kzbar span{color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <svg class="emblem" viewBox="0 0 42 48" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h34v24c0 9-9 14-17 18C13 42 4 37 4 28z"/><path d="M13 22l6 6 11-12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <div>
+    <h1>Центральная избирательная комиссия</h1>
+    <p>Выборы Президента · Единый портал голосования</p>
+  </div>
+</header>
+<nav id="nav">
+  <button data-p="home" class="act">Главная</button>
+  <button data-p="vote">Голосование</button>
+  <button data-p="cands">Кандидаты</button>
+  <button data-p="res">Результаты</button>
+  <button data-p="info">Информация</button>
+</nav>
+<main>
+  <section id="p-home" class="page">
+    <div class="card">
+      <h2>Выборы Президента<i></i></h2>
+      <p class="sub">Чтобы проголосовать, заполните анкету избирателя, примите соглашение о cookie и выберите кандидата.</p>
+      <button class="btn" data-go="vote">Перейти к голосованию</button>
+    </div>
+  </section>
+
+  <section id="p-vote" class="page hidden">
+    <div class="steps"><div id="s1" class="on">1. Анкета</div><div id="s2">2. Кандидат</div><div id="s3">3. Готово</div></div>
+    <div id="formCard" class="card">
+      <h2>Анкета избирателя<i></i></h2>
+      <p class="sub">Заполнение анкеты обязательно перед голосованием.</p>
+      <label class="f" for="fio">ФИО</label>
+      <input id="fio" type="text" placeholder="Иванов Иван Иванович" autocomplete="name">
+      <div class="err" id="e1"></div>
+      <label class="f" for="age">Возраст</label>
+      <input id="age" type="number" inputmode="numeric" min="1" max="120" placeholder="Например, 30">
+      <div class="err" id="e2"></div>
+      <label class="f" for="city">Город</label>
+      <input id="city" type="text" placeholder="Например, Москва" autocomplete="address-level2">
+      <div class="err" id="ec"></div>
+      <label class="f" for="goal">Цель голоса</label>
+      <textarea id="goal" rows="3" placeholder="Почему вы голосуете?"></textarea>
+      <div class="err" id="e3"></div>
+      <label class="f" for="capIn">Проверка на бота</label>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><canvas id="cap" width="170" height="56" style="border:1px solid var(--line);border-radius:6px"></canvas><button type="button" class="btn ghost" id="capNew">Обновить</button></div>
+      <input id="capIn" type="text" placeholder="Введите символы с картинки" autocomplete="off" style="margin-top:8px">
+      <div class="err" id="e5"></div>
+      <button class="btn" id="toVote">Продолжить</button>
+    </div>
+    <div id="voteCard" class="card hidden">
+      <h2>Выберите кандидата<i></i></h2>
+      <p class="sub">Выберите одного кандидата и нажмите «Проголосовать».</p>
+      <p id="strong" class="sub hidden" style="color:var(--blue);font-weight:600">Для вашего города включён усиленный режим cookie в связи с повышенными мерами безопасности.</p>
+      <div class="cands" id="cands"></div>
+      <div class="err" id="e4"></div>
+      <p style="margin-top:14px"><button class="btn ghost" id="back">Назад</button> <button class="btn" id="go">Проголосовать</button></p>
+    </div>
+    <div id="doneCard" class="card done hidden">
+      <div class="big">✅</div>
+      <h2>Ваш голос принят</h2>
+      <p id="doneText" class="sub"></p>
+    </div>
+  </section>
+
+  <section id="p-cands" class="page hidden">
+    <div class="card">
+      <h2>Кандидаты<i></i></h2>
+      <p class="sub">Список кандидатов в Президенты.</p>
+      <div class="cands" id="list"></div>
+    </div>
+  </section>
+
+  <section id="p-res" class="page hidden">
+    <div class="card">
+      <h2>Результаты голосования<i></i></h2>
+      <p class="sub" id="resNote">Загрузка…</p>
+      <div id="resBox"></div>
+      <div id="adm" style="margin-top:20px;border-top:2px solid var(--blue);padding-top:14px">
+        <h2 style="font-size:17px">Режим разработчика</h2>
+        <div id="admLogin">
+          <input id="admKey" type="password" placeholder="Секретный ключ" autocomplete="off">
+          <p style="margin:8px 0 0"><button class="btn ghost" id="admGo">Войти</button> <span class="err" id="admErr"></span></p>
+        </div>
+        <div id="admPanel" class="hidden">
+          <p class="sub">Тестовые голоса:</p>
+          <div id="admTest" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+          <div id="admList" style="margin-top:12px"></div>
+          <p><button class="btn ghost" id="admReset">Удалить все голоса</button></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="p-info" class="page hidden">
+    <div class="card">
+      <h2>Информация<i></i></h2>
+      <p class="sub">Порядок голосования: 1) анкета избирателя, 2) согласие на cookie, 3) выбор кандидата. Для кандидата «Ярослав» требуется взнос 30 рублей.</p>
+      <p class="sub"><b>Файлы cookie.</b> Мы сохраняем небольшие данные: согласие, номер посетителя, число визитов, дату первого и последнего визита, язык, часовой пояс, размер экрана, тип устройства, последнего выбранного кандидата и возрастную группу. Они хранятся только в вашем браузере и никуда не отправляются. В усиленном режиме дополнительно сохраняются данные об устройстве.</p>
+      <pre id="ck"></pre>
+    </div>
+  </section>
+  <section id="p-kz" class="page hidden">
+    <div class="kzbar"><div class="kzlogo">КЗ</div><div><b>Портал КЗуслуг</b><span>Государственные услуги онлайн</span></div></div>
+    <div class="card">
+      <h2>Добро пожаловать<i></i></h2>
+      <p class="sub">Демонстрационная страница портала КЗуслуг. Все услуги — в одном месте.</p>
+      <div class="cands">
+        <div class="cand" style="cursor:default"><div class="ava">1</div><div><b>Личный кабинет</b><span>Вход и регистрация</span></div></div>
+        <div class="cand" style="cursor:default"><div class="ava">2</div><div><b>Документы</b><span>Заявления и справки</span></div></div>
+        <div class="cand" style="cursor:default"><div class="ava">3</div><div><b>Штрафы и налоги</b><span>Проверка и оплата</span></div></div>
+      </div>
+      <p style="margin-top:14px"><button class="btn ghost" data-go="vote">Вернуться к выборам</button></p>
+    </div>
+  </section>
+</main>
+<footer><b>Центральная избирательная комиссия</b><br>© 2026 Все права защищены.</footer>
+
+<div id="cookie" class="cookie hidden">
+  <p>В соответствии с правилами портала мы используем <b>небольшие файлы cookie</b> для корректной работы голосования. Нажимая «Согласен», вы даёте согласие на использование <b>небольших файлов cookie</b>.</p>
+  <button class="btn" id="accept">Согласен</button>
+</div>
+
+<div id="promo" class="promo hidden">
+  <button class="x" id="px" aria-label="Закрыть">×</button>
+  <b>Присоединяйтесь к порталу КЗуслуги</b>
+  <small>Государственные услуги онлайн — быстро и удобно.</small>
+  <button class="btn" id="pj">Скачать КЗуслуги</button>
+</div>
+
+<div id="kzn" class="overlay hidden">
+  <div class="modal" style="border-top-color:var(--blue)">
+    <h3>Переход на портал КЗуслуг</h3>
+    <p>Вы будете перенаправлены на другой сайт — «Портал КЗуслуг». Но по техническим причинам переход пока невозможен. Попробуйте позже.</p>
+    <button class="btn" id="kzok">Понятно</button>
+  </div>
+</div>
+
+<div id="oops" class="overlay hidden">
+  <div class="modal">
+    <h3>Упс!</h3>
+    <p>Чтобы проголосовать, вы должны внести взнос в размере 30 рублей!</p>
+    <button class="btn" id="payBtn">Внести 30 ₽</button>
+    <button class="btn ghost" id="closeOops">Закрыть</button>
+    <p id="payMsg" style="margin:14px 0 0;font-size:14px;min-height:20px;color:var(--muted)"></p>
+  </div>
+</div>
+
+<script>
+var names=["Беляков Матвей","Анастасия Иванова","Кося","Ярослав"];
+var mem={};
+function $(i){return document.getElementById(i)}
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){if(v===undefined)return mem[k]||null;mem[k]=v}}
+
+/* Cookies: реально записываются, только безобидные */
+var store={};try{store=JSON.parse(localStorage.getItem("ckstore")||"{}")}catch(e){}
+var ckBlocked=false;
+function setCk(k,v,days){
+  try{document.cookie=k+"="+encodeURIComponent(v)+"; max-age="+days*86400+"; path=/; SameSite=Lax"}catch(e){}
+  store[k]=String(v);try{localStorage.setItem("ckstore",JSON.stringify(store))}catch(e){}
+}
+function getCk(k){
+  try{var m=document.cookie.match(new RegExp("(?:^|; )"+k+"=([^;]*)"));if(m)return decodeURIComponent(m[1])}catch(e){}
+  return store[k]===undefined?null:store[k];
+}
+function writeCookies(){
+  var id=getCk("visitor_id")||("v"+Math.random().toString(36).slice(2,10));
+  var n=parseInt(getCk("visits")||"0",10)+1;
+  setCk("cookie_consent","yes",365);setCk("visitor_id",id,365);setCk("visits",String(n),365);setCk("last_visit",new Date().toISOString().slice(0,10),365);
+  if(!getCk("first_visit"))setCk("first_visit",new Date().toISOString(),365);
+  setCk("lang",navigator.language||"",365);
+  try{setCk("tz",Intl.DateTimeFormat().resolvedOptions().timeZone||"",365)}catch(e){}
+  setCk("screen",screen.width+"x"+screen.height,365);
+  setCk("device",/Mobi|Android|iPhone/i.test(navigator.userAgent)?"mobile":"desktop",365);
+  ls("cookies","yes");
+}
+function showCk(){
+  var c="";try{c=document.cookie}catch(e){}
+  var t,keys=Object.keys(store);
+  if(c){t=c.split("; ").join("\n")}
+  else if(keys.length){t="(Браузер не пускает cookie на этой странице, поэтому данные сохранены в памяти страницы)\n"+keys.map(function(k){return k+"="+store[k]}).join("\n")}
+  else t="Пока ничего не сохранено. Нажмите «Согласен» в плашке cookie.";
+  $("ck").textContent=t;
+}
+function strongCk(){
+  setCk("strong_mode","yes",365);
+  setCk("ua",(navigator.userAgent||"").slice(0,80),365);
+  setCk("platform",navigator.platform||"",365);
+  setCk("cpu_cores",navigator.hardwareConcurrency||"",365);
+  setCk("pixel_ratio",window.devicePixelRatio||"",365);
+  setCk("color_depth",screen.colorDepth||"",365);
+  setCk("touch",("ontouchstart" in window)?"yes":"no",365);
+  setCk("referrer",(document.referrer||"none").slice(0,60),365);
+}
+var agreed=getCk("cookie_consent")==="yes"||ls("cookies")==="yes";
+if(agreed)writeCookies();else $("cookie").classList.remove("hidden");
+$("accept").onclick=function(){agreed=true;writeCookies();$("cookie").classList.add("hidden");showCk()};
+
+/* Навигация сверху */
+function show(p){
+  [].forEach.call(document.querySelectorAll(".page"),function(s){s.classList.toggle("hidden",s.id!=="p-"+p)});
+  [].forEach.call($("nav").children,function(b){b.classList.toggle("act",b.dataset.p===p)});
+  document.body.classList.toggle("kz",p==="kz");
+  if(p==="info")showCk();if(p==="res"&&typeof refresh==="function")refresh();window.scrollTo(0,0);
+}
+[].forEach.call($("nav").children,function(b){b.onclick=function(){show(b.dataset.p)}});
+[].forEach.call(document.querySelectorAll("[data-go]"),function(b){b.onclick=function(){show(b.dataset.go)}});
+
+/* Кандидаты */
+var chosen=null,paid=false,box=$("cands");
+names.forEach(function(n,i){
+  var l=document.createElement("label");l.className="cand";
+  l.innerHTML='<input type="radio" name="c"><div class="ava">'+n.charAt(0)+'</div><div><b>'+n+'</b><span>Кандидат №'+(i+1)+'</span></div>';
+  l.querySelector("input").onchange=function(){chosen=i;[].forEach.call(box.children,function(c){c.classList.remove("sel")});l.classList.add("sel");$("e4").textContent="";
+    if(agreed)setCk("last_choice",n,30);
+    updateGo();if(n==="Ярослав"&&!paid&&!ADMIN)openOops()};
+  box.appendChild(l);
+  var r=document.createElement("div");r.className="cand";r.style.cursor="default";
+  r.innerHTML='<div class="ava">'+n.charAt(0)+'</div><div><b>'+n+'</b><span>Кандидат №'+(i+1)+'</span></div>';
+  $("list").appendChild(r);
+});
+
+/* Окно взноса: пока оно открыто, голосовать нельзя; за Ярослава нельзя вообще */
+function openOops(){$("oops").classList.remove("hidden");$("go").disabled=true;$("promo").classList.add("hidden")}
+function updateGo(){$("go").disabled=(chosen!==null&&names[chosen]==="Ярослав"&&!paid&&!ADMIN)}
+$("closeOops").onclick=function(){stopPay();$("payMsg").textContent="";$("oops").classList.add("hidden");updateGo()};
+var payT=null,payTxt=["Подключаемся к платёжному сервису…","Заходим в ваш банк…","Проверяем баланс карты…","Подтверждаем платёж…"];
+function stopPay(){clearInterval(payT);payT=null;$("payBtn").disabled=false}
+$("payBtn").onclick=function(){
+  var i=0,m=$("payMsg");m.style.color="var(--muted)";m.textContent=payTxt[0];$("payBtn").disabled=true;
+  payT=setInterval(function(){i++;if(i<payTxt.length){m.textContent=payTxt[i]}else{stopPay();m.style.color="var(--red)";m.textContent="Ошибка: не удалось завершить платёж. Попробуйте позже."}},1400);
+};
+
+function step(n){$("formCard").classList.toggle("hidden",n!==1);$("voteCard").classList.toggle("hidden",n!==2);$("doneCard").classList.toggle("hidden",n!==3);
+  ["s1","s2","s3"].forEach(function(s,i){$(s).classList.toggle("on",i+1<=n)});window.scrollTo(0,0)}
+
+$("toVote").onclick=function(){
+  var f=$("fio").value.trim(),a=parseInt($("age").value,10),g=$("goal").value.trim(),ci=$("city").value.trim(),ok=true;
+  $("e1").textContent=$("e2").textContent=$("e3").textContent=$("ec").textContent=$("e5").textContent="";
+  if(f.split(/\s+/).length<2){$("e1").textContent="Укажите фамилию и имя (и отчество).";ok=false}
+  if(!(a>0&&a<=120)){$("e2").textContent="Укажите корректный возраст.";ok=false}
+  if(g.length<3){$("e3").textContent="Укажите цель вашего голоса.";ok=false}
+  if(ci.length<2){$("ec").textContent="Укажите город.";ok=false}
+  if($("capIn").value.trim().toUpperCase()!==capCode){$("e5").textContent="Неверные символы. Попробуйте ещё раз.";$("capIn").value="";newCap();ok=false}
+  if(!ok)return;
+  if(!agreed){$("cookie").classList.remove("hidden");$("e3").textContent="Для продолжения примите соглашение о cookie.";return}
+  if(agreed)setCk("age_group",a<18?"under18":a<35?"18-34":a<60?"35-59":"60+",365);
+  var hot=/^(настяград|ярославль)$/i.test(ci);
+  $("strong").classList.toggle("hidden",!hot);
+  if(hot&&agreed)strongCk();
+  step(2);
+};
+var capCode="";
+function newCap(){
+  var ch="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",s="",i;
+  for(i=0;i<5;i++)s+=ch.charAt(Math.floor(Math.random()*ch.length));
+  capCode=s;
+  var c=$("cap"),x=c.getContext("2d");
+  x.fillStyle="#f5f7fb";x.fillRect(0,0,c.width,c.height);
+  for(i=0;i<7;i++){x.strokeStyle="rgba(11,95,209,"+(0.2+Math.random()*0.4)+")";x.lineWidth=1.5;x.beginPath();x.moveTo(Math.random()*c.width,Math.random()*c.height);x.lineTo(Math.random()*c.width,Math.random()*c.height);x.stroke()}
+  for(i=0;i<5;i++){x.save();x.translate(14+i*29,36+Math.random()*8-4);x.rotate((Math.random()-.5)*.7);x.font="bold "+Math.round(26+Math.random()*6)+"px Georgia,serif";x.fillStyle="#0b3d91";x.fillText(s.charAt(i),0,0);x.restore()}
+  for(i=0;i<50;i++){x.fillStyle="rgba(0,0,0,.25)";x.fillRect(Math.random()*c.width,Math.random()*c.height,2,2)}
+}
+$("capNew").onclick=newCap;newCap();
+$("back").onclick=function(){step(1)};
+$("go").onclick=function(){
+  if(chosen===null){$("e4").textContent="Выберите кандидата.";return}
+  if(names[chosen]==="Ярослав"&&!paid&&!ADMIN){openOops();return}
+  castVote(chosen);
+};
+async function castVote(i){
+  var e4=$("e4");
+  try{
+    var j=await api("/api/vote",{method:"POST",body:JSON.stringify({c:i,voter:vid()})});
+    if(j.status===409){e4.style.color="var(--red)";e4.textContent="Вы уже голосовали: повторное голосование невозможно.";return}
+    if(j.status!==200){e4.style.color="var(--red)";e4.textContent=j.error||"Не удалось записать голос.";return}
+  }catch(e){e4.style.color="var(--red)";e4.textContent="Сервер недоступен. Попробуйте позже.";return}
+  setCk("voted","yes",365);
+  $("doneText").textContent="Спасибо, "+$("fio").value.trim().split(/\s+/)[1]+"! Вы проголосовали за кандидата: "+names[i]+".";
+  step(3);loadRes();
+}
+
+/* Сервер голосования */
+var API="https://vibori-api.REPLACE_ME.workers.dev";
+var ADMIN=ls("admkey")||"";
+function vid(){var v=ls("vid");if(!v){v=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():("v"+Math.random().toString(36).slice(2)+Date.now());ls("vid",v)}return v}
+function api(path,opt){
+  opt=opt||{};opt.headers=opt.headers||{};
+  if(ADMIN)opt.headers["X-Admin-Key"]=ADMIN;
+  if(opt.body)opt.headers["Content-Type"]="application/json";
+  return fetch(API+path,opt).then(function(r){return r.json().then(function(j){j.status=r.status;return j})});
+}
+function renderRes(c,t){
+  $("resBox").innerHTML=names.map(function(n,i){var p=t?Math.round(c[i]*100/t):0;
+    return '<div style="margin:12px 0"><b>'+n+'</b> — '+c[i]+' ('+p+'%)<div style="background:var(--soft);border:1px solid var(--line);border-radius:4px;height:14px;margin-top:4px"><div style="width:'+p+'%;height:100%;background:var(--blue);border-radius:3px"></div></div></div>'}).join("")+'<p class="sub">Всего голосов: '+t+'</p>';
+}
+function loadRes(){
+  api("/api/results").then(function(j){
+    if(j.counts){renderRes(j.counts,j.total);$("resNote").textContent="Подсчёт голосов онлайн. Один избиратель — один голос."}
+    else $("resNote").textContent="Не удалось загрузить результаты.";
+  }).catch(function(){renderRes([0,0,0,0],0);$("resNote").textContent="Сервер недоступен."});
+}
+function refresh(){loadRes();if(ADMIN)loadAdm()}
+function renderAdm(vs){
+  $("admList").innerHTML=vs.map(function(v){
+    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px"><span>'+(names[v.c]||"?")+' · '+new Date(v.t).toLocaleString("ru-RU")+(v.admin?' · ключ':'')+'</span><button class="btn ghost" data-del="'+v.id+'">Отменить</button></div>'}).join("")||'<p class="sub">Голосов нет.</p>';
+  [].forEach.call($("admList").querySelectorAll("[data-del]"),function(b){
+    b.onclick=function(){api("/api/admin/delete",{method:"POST",body:JSON.stringify({id:b.dataset.del})}).then(refresh)};
+  });
+}
+function loadAdm(){
+  api("/api/admin/votes").then(function(j){
+    if(j.status!==200){$("admErr").textContent="Неверный ключ";ADMIN="";ls("admkey","");$("admPanel").classList.add("hidden");$("admLogin").classList.remove("hidden");return}
+    $("admErr").textContent="";$("admLogin").classList.add("hidden");$("admPanel").classList.remove("hidden");renderAdm(j.votes);
+  }).catch(function(){$("admErr").textContent="Сервер недоступен"});
+}
+$("admGo").onclick=function(){ADMIN=$("admKey").value.trim();ls("admkey",ADMIN);loadAdm()};
+$("admTest").innerHTML=names.map(function(n,i){return '<button class="btn ghost" data-t="'+i+'">+ '+n+'</button>'}).join("");
+[].forEach.call($("admTest").querySelectorAll("[data-t]"),function(b){
+  b.onclick=function(){api("/api/vote",{method:"POST",body:JSON.stringify({c:+b.dataset.t,voter:"test"})}).then(refresh)};
+});
+var armed=false;
+$("admReset").onclick=function(){
+  if(!armed){armed=true;$("admReset").textContent="Нажмите ещё раз для подтверждения";return}
+  armed=false;$("admReset").textContent="Удалить все голоса";
+  api("/api/admin/reset",{method:"POST"}).then(refresh);
+};
+loadRes();if(ADMIN)loadAdm();
+
+/* Случайная плашка КЗуслуги */
+function closePromo(){$("promo").classList.add("hidden");schedule()}
+function schedule(){setTimeout(function(){
+  if($("oops").classList.contains("hidden")&&$("kzn").classList.contains("hidden"))$("promo").classList.remove("hidden");else schedule();
+},8000+Math.random()*17000)}
+$("px").onclick=closePromo;
+$("pj").onclick=function(){$("promo").classList.add("hidden");$("kzn").classList.remove("hidden")};
+$("kzok").onclick=function(){$("kzn").classList.add("hidden");schedule()};
+schedule();
+</script>
+</body>
+</html>
